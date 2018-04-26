@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2018 by anonymous (http://jsbin.com/gimodapaqi/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+</head>
+<body>
+  <canvas id="meinCanvas" height="1000" width="1000" style="border:2px grey solid"></canvas>
+
+<script id="jsbin-javascript">
+var c = document.getElementById('meinCanvas').getContext('2d')
+var canvas = document.getElementById('meinCanvas')
+
+var posX = canvas.width / 2
+var posY = canvas.height / 2
+var rect1x = 50
+var rect1y = canvas.height / 2 - 100
+var rect2x = canvas.width - 50
+var rect2y = canvas.height / 2 - 100
+
+var scalex = 10
+var scaley = 200
+
+var speedX = 0
+var speedY = 0
+var randomx
+var randomx
+
+var radius = 15
+
+var counts = 0
+var count1 = 0
+var count2 = 0
+
+var up_arrow
+var down_arrow
+var w
+var s
+var spacebar
+
+var end = false
+
+document.addEventListener('keydown', function(e) {
+  if(e.keyCode == 38) up_arrow = true
+  if(e.keyCode == 40) down_arrow = true
+  if(e.keyCode == 87) w = true
+  if(e.keyCode == 83) s = true
+  if(e.keyCode == 32) spacebar = true
+})
+
+document.addEventListener('keyup', function(e) {
+  if(e.keyCode == 38) up_arrow = false
+  if(e.keyCode == 40) down_arrow = false
+  if(e.keyCode == 87) w = false
+  if(e.keyCode == 83) s = false
+  if(e.keyCode == 32) spacebar = false
+})
+
+
+
+function spielUpdate() {
+  
+  c.clearRect(0, 0, canvas.width, canvas.height)
+  
+  posY = posY + speedY
+  posX = posX + speedX
+  
+  if(posY >= canvas.height - radius) {
+    posY = canvas.height - radius
+    speedY = -speedY
+  }
+  if(posY <= 0 + radius) {
+     posY = 0 + radius
+     speedY = -speedY
+  }
+/*if(posX >= canvas.width - radius) {
+    posX = canvas.width - radius
+    speedX = -speedX
+  }
+  if(posX <= 0 + radius) {
+     posX = 0 + radius
+     speedX = -speedX
+  }*/
+  
+  if(up_arrow) rect2y -= 10
+  if(down_arrow) rect2y += 10
+  if(w) rect1y -= 10
+  if(s) rect1y += 10
+  
+  if(posX <= rect1x + scalex &&
+     posY <= rect1y + scaley &&
+     posY >= rect1y) {
+    speedX = -speedX
+    posX += 5
+  }
+  if(posX >= rect2x &&
+     posY <= rect2y + scaley &&
+     posY >= rect2y) {
+    speedX = -speedX
+    posX -= 5
+  }
+  
+  if(rect1y <= 0) rect1y = 0
+  if(rect2y <= 0) rect2y = 0
+  if(rect1y + scaley >= canvas.height) rect1y = canvas.height - scaley
+  if(rect2y + scaley >= canvas.height) rect2y = canvas.height - scaley
+  
+  if(posX <= 0) {
+    posX = canvas.width / 2
+    posY = canvas.height / 2
+    speedY = 0
+    speedX = 0
+    counts += 1
+    count2 += 1
+  }
+  if(posX >= canvas.width) {
+    posX = canvas.width / 2
+    posY = canvas.height / 2
+    speedY = 0
+    speedX = 0
+    counts += 1
+    count1 += 1
+    alert("Player 1 won the Game!")
+    if(counts == 10){
+      end = true
+      if(count1 > count2) {
+        c.font = "50px Arial"
+        c.fillText("Player one", canvas.width / 2 - 200, canvas.height / 2 - 100)
+      }
+    }
+  }
+  
+  if(spacebar &&
+     !end &&
+     speedY == 0 &&
+     speedX == 0) {
+    randomx = Math.random()
+    randomy = Math.random()
+    
+    if(randomx < 0.5) {
+      speedX = Math.random() * 7 + 3
+    } else {
+      speedX = Math.random() * -7 - 3
+    }
+    
+    if(randomy < 0.5) {
+      speedY = Math.random() * 5 + 1
+    } else {
+      speedY = Math.random() * -5 - 1
+    }
+  }
+  
+  c.beginPath()
+  c.fillStyle="grey"
+  c.rect(canvas.width / 2 - 3, 0, 6, canvas.height)
+  c.fill()
+  
+  c.beginPath()
+  c.fillStyle="blue"
+  c.arc(posX,posY, radius, 0, 2*Math.PI)
+  c.fill()
+  
+  c.beginPath()
+  c.fillStyle="black"
+  c.rect(rect1x, rect1y, scalex, scaley)
+  c.fill()
+  
+  c.beginPath()
+  c.fillStyle="black"
+  c.rect(rect2x, rect2y, scalex, scaley)
+  c.fill()
+  
+  c.font = "50px Arial"
+  c.fillText(count1, 10, 50)
+  c.fillText(count2, 460, 50)
+  c.fillText("Player 1", canvas.width / 2 - 200, canvas.height / 2 - 100)
+  c.fillText("won the game", canvas.width / 2 - 200, canvas.height / 2 - 30)
+  alert("Player 1 won the Game!")
+  
+  window.requestAnimationFrame(spielUpdate)
+}
+
+spielUpdate()
+
+
+
+</script>
+</body>
+</html>
